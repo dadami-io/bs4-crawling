@@ -14,6 +14,12 @@ from konlpy.tag import Kkma         # 오픈소스 한국어 분석기
 from konlpy.tag import Okt          # 오픈소스 한국어 분석기
 from wordcloud import WordCloud     
 
+# 뉴스 기사를 크롤링하기 위한 날짜를 변수에 저장
+query = '코로나'
+
+# 클롤링하기 위한 링크를 변수에 저장
+news_url = f'https://search.naver.com/search.naver?query={query}&where=news&ie=utf8&sm=nws_hty'
+
 # 안티 크롤링(Python 코드가 아닌 Mozilla 브라우저로 접속하는 것처럼 우회)
 # 일반적으로 각 웹사이트는 해킹, 불법 접속 등을 막기 위해 프로그래머가 코드를 통해 접근하는 것을 방지해놓음
 # 브라우저로 접속하는 것처럼 User-Agent에 Mozilla, Chrome 등을 작성하여 우회하는 것을 안티 크롤링이라고 함
