@@ -1,9 +1,9 @@
 # 한글 분석을 위한 코엔엘파이(konlpy) 설치
-!pip install konlpy 
+# !pip install konlpy 
 
 # 코랩에서 한글 표기를 위해 나눔 글꼴 설치
-!apt-get update -qq
-!apt-get install fonts-nanum* -qq  
+# !apt-get update -qq
+# !apt-get install fonts-nanum* -qq  
 
 
 import requests                     # HTML 요청 처리
