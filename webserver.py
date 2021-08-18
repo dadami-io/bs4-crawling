@@ -1,6 +1,5 @@
 from flask import Flask, render_template, send_file, request
-from main import getImg
-from main import getMusic
+from main import getImg, getMusic
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -12,16 +11,16 @@ def index():
 
 @app.route('/music')
 def music():
-    query=request.args.get('query', type=str)
-    img=getMusic(query)
+    query = request.args.get('query', type=str)
+    img = getMusic(query)
     return send_file(img, mimetype='image/png')
 
 
 
 @app.route('/news')
 def img():
-    query=request.args.get('query', type=str)
-    img=getImg(query)
+    query = request.args.get('query', type=str)
+    img = getImg(query)
     return send_file(img, mimetype='image/png')
 
 
