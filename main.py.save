@@ -1,31 +1,31 @@
-from bs4.element import Declaration
 import requests
-from bs4 import BeautifulSoup #파싱 모듈 임포트
-import matplotlib.pyplot as plt #데이터 분석 모듈 matplotlib 임포트
+from bs4 import BeautifulSoup
+import matplotlib.pyplot as plt
 import nltk
-from konlpy.tag import Okt 
-from wordcloud import WordCloud #워드클라우드 모듈
+from konlpy.tag import Okt
+from konlpy.tag import Kkma
+from wordcloud import WordCloud
 from io import BytesIO
 import time
-import gc
 
 tw = Okt()
-query = 'null'
+query = '코로나'
 news_url = 'https://search.naver.com/search.naver?query={}&where=news&ie=utf8&sm=nws_hty'
-headers = {'User-Agent':'Mozilla/5.0'} #유저에이전트를 헤더에 걸어둠으로서 봇이 아니라고 서버를 속임
+headers = {'User-Agent':'Mozilla/5.0'}
 
 def getImg(query=query):
     first=time.time()
-    gc.collect()
+    print(query)
     req = requests.get(news_url.format(query), headers = headers)
     soup = BeautifulSoup(req.text, 'html.parser')
-    news_titles = soup.select('div.news_wrap.api_ani_send > div > a') #파싱할 부분 파싱
+    news_titles = soup.select('div.news_wrap.api_ani_send > div > a')
     crowled_title = []
     for i in range(len(news_titles)):
         crowled_title.append(news_titles[i].text)
+        print(i+1, news_titles[i].text)
 
     title = "".join(crowled_title)
-    filter_text = ['.','"',',',"'",'·','=','\n','[',']','“','”','‘','’','?','!','…','vs', '▶','→','(',')','+'] #이런 문자들은 데이터에서 제외
+    filter_text = ['.','"',',',"'",'·','=','\n','[',']','“','”','‘','’','?','!','…','vs', '▶','→','(',')','+']
     for text in filter_text:
         title = title.replace(text, ' ')
     filtered_title = title
@@ -40,10 +40,11 @@ def getImg(query=query):
 
     third=time.time()
 
-    new_ko=[] #형태소분석 - 명사만 추출
+    new_ko=[]
     for word in ko:
       if len(word) > 1 and word != '단독' and  word != ' ':
             new_ko.append(word)
+    print(new_ko)
 
     fourth=time.time()
 
@@ -51,8 +52,10 @@ def getImg(query=query):
     ko.tokens
     ko.vocab()
     data = ko.vocab().most_common(150)
+    print(data)
 
     data = dict(data)
+    print(data)
 
     fifth=time.time()
     wordcloud = WordCloud().generate(filtered_title)
@@ -63,50 +66,45 @@ def getImg(query=query):
             height=960, \
             max_words=100, \
             max_font_size=300)
-    wc = wc.generate_from_frequencies(data) #워드클라우드 생성
+    wc = wc.generate_from_frequencies(data)
 
     sixth=time.time()
 
     plt.figure(figsize=(10,10))
     plt.imshow(wc, interpolation='bilinear')
     plt.axis('off')
-
-
+   
 
     seventh=time.time()
 
     img = BytesIO()
-    plt.savefig(img, format='png', dpi=200) #만들어진 이미지 세이브
+    plt.savefig(img, format='png', dpi=200)
     img.seek(0)
 
     eighth=time.time()
-    gc.collect()
-    plt.close('all')
-    plt.clf()
+
+    print(eighth-first)
+    print(first,second,third,fifth,sixth,seventh,eighth)
     return img
-    
+    del img
 
 
-
-def getMusic(query):    
+def getMusic(query):
         response = "".join([i for i in requests.get("https://api.music.msub.kr/?song="+query).json()["song"][int(0)]["lyrics"].replace("<br>", "\n").split("\n") if i!="" and i!=" "])
         for text in ['.','"',',',"'",'·','=','\n','[',']','“','”','‘','’','?','!','…','vs', '▶','→','(',')','+']:response = response.replace(text, ' ')
 
         plt.figure(figsize=(10,10))
-        gc.collect()
         plt.imshow(WordCloud(font_path='NanumGothicEcoR.ttf',\
                 background_color="white", \
                 width=1280, \
                 height=960, \
                 max_words=100, \
-                max_font_size=300).generate_from_frequencies(dict(nltk.Text([i for i in nltk.Text(Okt().nouns(response), name='기사 내 명사') if len(i)>1 and i!=" "], name = '기사 내 명사 두 번째').vocab().most_common(150))), interpolation='bilinear')
+                max_font_size=300).generate_from_frequencies(dict(nltk.Text([i for i in nltk.Text(Kkma().nouns(response), name='기사 내 명사') if len(i)>1 and i!=" "], name = '기사 내 명사 두 번째').vocab().most_common(150))), interpolation='bilinear')
         plt.axis('off')
-
+       
 
         img = BytesIO()
         plt.savefig(img, format='png', dpi=200)
         img.seek(0)
-        gc.collect()
-        plt.close('all')
-        plt.clf()
         return img
+
