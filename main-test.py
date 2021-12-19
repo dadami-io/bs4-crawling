@@ -3,14 +3,14 @@ import requests
 from bs4 import BeautifulSoup #파싱 모듈 임포트
 import matplotlib.pyplot as plt #데이터 분석 모듈 matplotlib 임포트
 import nltk
-from konlpy.tag import Okt 
+from konlpy.tag import Okt #상용 코드였으면 Okt와 Kkma 중 하나만 가져왔겠지만 연구용이기 때문에 둘다 가져옴
 from wordcloud import WordCloud #워드클라우드 모듈
 from io import BytesIO
 import time
 import gc
 
 tw = Okt()
-query = 'null'
+query = '코로나' #사실 쿼리는 지금 정할 필요 없음
 news_url = 'https://search.naver.com/search.naver?query={}&where=news&ie=utf8&sm=nws_hty'
 headers = {'User-Agent':'Mozilla/5.0'} #유저에이전트를 헤더에 걸어둠으로서 봇이 아니라고 서버를 속임
 
@@ -88,7 +88,7 @@ def getImg(query=query):
 
 
 
-def getMusic(query):    
+def getMusic(query):
         response = "".join([i for i in requests.get("https://api.music.msub.kr/?song="+query).json()["song"][int(0)]["lyrics"].replace("<br>", "\n").split("\n") if i!="" and i!=" "])
         for text in ['.','"',',',"'",'·','=','\n','[',']','“','”','‘','’','?','!','…','vs', '▶','→','(',')','+']:response = response.replace(text, ' ')
 
