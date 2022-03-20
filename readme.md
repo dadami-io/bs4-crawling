@@ -1,1 +1,1 @@
-조금 더러움 아니 많이 더러움 
+uvicorn + fastapi + react + matplotlib
